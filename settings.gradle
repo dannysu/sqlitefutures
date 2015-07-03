@@ -1,0 +1,3 @@
+include ':sqlitefutures'
+
+rootProject.name = 'sqlitefutures-root'

@@ -1,0 +1,60 @@
+buildscript {
+  dependencies {
+    classpath rootProject.ext.androidPlugin
+  }
+}
+
+apply plugin: 'com.android.library'
+
+dependencies {
+  androidTestCompile rootProject.ext.supportTestRunner
+  androidTestCompile(rootProject.ext.truth) {
+    exclude group: 'junit' // Android has JUnit built in.
+  }
+}
+
+def isCi() {
+  return "true".equals(System.getenv('CI'))
+}
+
+android {
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+
+  defaultConfig {
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+
+  dexOptions {
+    preDexLibraries = !isCi()
+  }
+
+  lintOptions {
+    textOutput 'stdout'
+  }
+
+  buildTypes {
+    debug {
+      testCoverageEnabled true
+    }
+  }
+}
+
+if (isCi()) {
+  println 'Running on CI. Adding task to start emulator.'
+
+  task startEmulator << {
+    "$rootDir/gradle/start-emulator.sh".execute().waitFor()
+  }
+
+  android.testVariants.all { variant ->
+    variant.connectedInstrumentTest.dependsOn startEmulator
+  }
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

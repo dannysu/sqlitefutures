@@ -1,0 +1,25 @@
+subprojects {
+  buildscript {
+    repositories {
+      mavenCentral()
+    }
+  }
+
+  repositories {
+    mavenCentral()
+  }
+}
+
+ext {
+  androidPlugin = 'com.android.tools.build:gradle:1.2.3'
+  compileSdkVersion = 22
+  buildToolsVersion = '22.0.1'
+
+  // Android dependencies.
+  supportV4 = 'com.android.support:support-v4:22.1.0'
+  supportAnnotations = 'com.android.support:support-annotations:22.1.0'
+  supportTestRunner = 'com.android.support.test:runner:0.3'
+
+  // Third-party dependencies.
+  truth = 'com.google.truth:truth:0.25'
+}
